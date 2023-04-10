@@ -3,42 +3,156 @@ const display = document.querySelector('#display-screen-text');
 const buttons = document.querySelector("#calculator-body");
 const flipBtns = document.querySelectorAll(".flip-btn");
 const alertBar = document.getElementById("alert-bar");
+let alertBarInput = document.querySelector("#alert-bar-input");
 const degButtons = document.querySelectorAll(".deg-btn");
 let check = 0;
 let degMode = true;
-if (buttons) {
-    buttons.addEventListener("click", (e) => {
-        let element = e.target;
-        if (display) {
-            let data = element.dataset;
-            if (data['flip']) {
-                console.log("flip");
-                flipBtns.forEach((btn) => {
-                    btn.classList.toggle("hide-btn");
-                });
+let memory = 0;
+const memoryRecallButton = document.getElementById("memoryRecall");
+buttons.addEventListener("click", (e) => {
+    let element = e.target;
+    let data = element.dataset;
+    if (data['flip']) {
+        flipBtns.forEach((btn) => {
+            btn.classList.toggle("hide-btn");
+        });
+    }
+    else if (data['operator']) {
+        if (checkPreviousElement(display.value)) {
+            display.value += data['operator'];
+        }
+    }
+    else if (data['result']) {
+        let result = "";
+        check = 0;
+        if (display.value == "") {
+            showAlert("Give Input");
+        }
+        else if (!checkParenthesis(display.value)) {
+            showAlert("invalid input, check for parenthesis");
+        }
+        else {
+            if (checkForScientificNotation(display.value)) {
+                showAlert("It doesn't accept scientific notation");
             }
-            else if (data['result']) {
-                display.value = evaluateExpression(display.value);
-            }
-            else if (data['clear']) {
-                display.value = "";
-            }
-            else if (data['backspace']) {
-                console.log("backspace");
-                display.value = removeLastElement(display.value);
-            }
-            else if (data['deg']) {
-                console.log("clicked");
-                degButtons.forEach((btn) => {
-                    btn.classList.toggle("hide-btn");
-                });
-                degMode = !degMode;
+            else {
+                result = evaluateExpression(display.value);
+                if (isNaN(Number(result))) {
+                    showAlert("invalid Input");
+                }
+                else {
+                    display.value = result;
+                }
             }
         }
-    });
+    }
+    else if (data['clear']) {
+        display.value = "";
+    }
+    else if (data['backspace']) {
+        display.value = removeLastElement(display.value);
+    }
+    else if (data['deg']) {
+        degButtons.forEach((btn) => {
+            btn.classList.toggle("hide-btn");
+        });
+        degMode = !degMode;
+    }
+    else if (data['memory']) {
+        memorySetUp(data['memory']);
+    }
+    else if (data['fe']) {
+        if (checkForNumber(display.value) && display.value != "") {
+            display.value = Number(display.value).toExponential(5);
+        }
+        else {
+            showAlert("invalid number");
+        }
+    }
+    else if (data['minus']) {
+        if (display.value.charAt(0) == "(" || !isNaN(Number(display.value.charAt(0)))) {
+            display.value = "-" + display.value;
+        }
+        else if (display.value.charAt(0) == "-") {
+            display.value = display.value.slice(1);
+        }
+    }
+    else if (data['pi']) {
+        console.log("pi");
+        addMultiplication(display.value);
+        appendInput(Math.PI.toString());
+    }
+    else if (data['e']) {
+        addMultiplication(display.value);
+        appendInput(Math.E.toString());
+    }
+    else if (data['unary']) {
+        addMultiplication(display.value);
+        appendInput(data['unary']);
+    }
+    else if (data['value']) {
+        if (checkPreviousElement(display.value)) {
+            appendInput(data['value']);
+        }
+    }
+});
+function appendInput(element) {
+    display.value += element;
+}
+function checkPreviousElement(inputString) {
+    let displayLength = inputString.length;
+    let previousElement = inputString.charAt(displayLength - 1);
+    if (previousElement.match(/[+|/|*|%|^]/) || previousElement == "") {
+        showAlert("Not Valid");
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+function addMultiplication(inputString) {
+    if ((!isNaN(Number(inputString.slice(-1))) || inputString.slice(-1) == ")") && inputString.slice(-1) != "") {
+        display.value += "*";
+    }
+}
+function checkForNumber(expression) {
+    if (expression.match(/[a-z]/gi)) {
+        return false;
+    }
+    return true;
+}
+function checkForScientificNotation(inputString) {
+    if (inputString.includes("e+")) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+function checkParenthesis(expression) {
+    const openParenthesis = expression.match(/\(/g);
+    const closeParenthesis = expression.match(/\)/g);
+    if (openParenthesis == null && closeParenthesis == null) {
+        return true;
+    }
+    if (openParenthesis != null && closeParenthesis != null && openParenthesis.length === closeParenthesis.length) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 function removeLastElement(value) {
     return value.slice(0, value.length - 1);
+}
+function showAlert(text) {
+    if (alertBarInput) {
+        alertBarInput.value = text;
+    }
+    alertBar.style.display = "flex";
+    setTimeout(() => {
+        alertBar.style.display = "none";
+    }, 3000);
 }
 function evaluateExpression(expression) {
     check++;
@@ -52,12 +166,6 @@ function evaluateExpression(expression) {
     else {
         return evaluateAdvanceFunction(expression);
     }
-}
-function checkForNumber(expression) {
-    if (expression.match(/[a-z]/gi)) {
-        return false;
-    }
-    return true;
 }
 function postfixEvaluation(expression) {
     let arr = infixToPostFix(expression);
@@ -108,17 +216,69 @@ function postfixEvaluation(expression) {
     }
     return Number.isInteger(Number(result)) ? result : Number(result).toFixed(2);
 }
-let alertBarInput = document.querySelector("#alert-bar-input");
-function showAlert(text) {
-    if (alertBar) {
-        if (alertBarInput) {
-            alertBarInput.value = text;
+function convertToArr(expression) {
+    let output = [];
+    let temp = "";
+    let i = 0;
+    while (i < expression.length) {
+        if (expression[i] == "-") {
+            if (expression[i + 1] == "-") {
+                expression = expression.slice(0, i) + expression.slice(i + 2, expression.length);
+            }
+            else if (expression[i + 1] == "(") {
+                let j = i + 1;
+                let extractString = "(";
+                const tempStack = [];
+                tempStack.push("(");
+                if (checkParenthesis(expression)) {
+                    while (tempStack.includes("(")) {
+                        if (expression[j + 1] == "(") {
+                            tempStack.push("(");
+                        }
+                        else if (expression[j + 1] == ")") {
+                            tempStack.pop();
+                        }
+                        extractString += expression[j + 1];
+                        j++;
+                    }
+                }
+                let solvedExtractString = evaluateExpression(extractString);
+                expression = expression.substring(0, i + 1) + solvedExtractString + expression.substring(j + 1, expression.length);
+                i = 0;
+                output = [];
+                temp = "";
+            }
+            else if ((i == 0 && expression[0] == "-") || (expression[i - 1] != ")" && isNaN(Number(expression[i - 1])))) {
+                temp += expression[i];
+                i++;
+                while (!isNaN(Number(expression[i])) || expression[i] == ".") {
+                    temp += expression[i];
+                    i++;
+                }
+                output.push(temp);
+                temp = "";
+            }
+            else {
+                output.push(expression[i]);
+                i++;
+            }
         }
-        alertBar.style.display = "flex";
-        setTimeout(() => {
-            alertBar.style.display = "none";
-        }, 3000);
+        else if (!isNaN(Number(expression[i])) || expression[i] == ".") {
+            temp += expression[i];
+            i++;
+            while (!isNaN(Number(expression[i])) || expression[i] == ".") {
+                temp += expression[i];
+                i++;
+            }
+            output.push(temp);
+            temp = "";
+        }
+        else {
+            output.push(expression[i]);
+            i++;
+        }
     }
+    return output;
 }
 function infixToPostFix(inputString) {
     inputString = "(" + inputString + ")";
@@ -272,85 +432,40 @@ function factorial(n) {
         return n * factorial(n - 1);
     }
 }
-function convertToArr(expression) {
-    let output = [];
-    let temp = "";
-    let i = 0;
-    while (i < expression.length) {
-        if (expression[i] == "-") {
-            if (expression[i + 1] == "-") {
-                expression = expression.slice(0, i) + expression.slice(i + 2, expression.length);
-            }
-            else if (expression[i + 1] == "(") {
-                let j = i + 1;
-                let extractString = "(";
-                const tempStack = [];
-                tempStack.push("(");
-                if (checkParenthesis(expression)) {
-                    while (tempStack.includes("(")) {
-                        if (expression[j + 1] == "(") {
-                            tempStack.push("(");
-                        }
-                        else if (expression[j + 1] == ")") {
-                            tempStack.pop();
-                        }
-                        extractString += expression[j + 1];
-                        j++;
-                    }
-                }
-                let solvedExtractString = evaluateExpression(extractString);
-                expression = expression.substring(0, i + 1) + solvedExtractString + expression.substring(j + 1, expression.length);
-                i = 0;
-                output = [];
-                temp = "";
-            }
-            else if ((i == 0 && expression[0] == "-") || (expression[i - 1] != ")" && isNaN(Number(expression[i - 1])))) {
-                temp += expression[i];
-                i++;
-                while (!isNaN(Number(expression[i])) || expression[i] == ".") {
-                    temp += expression[i];
-                    i++;
-                }
-                output.push(temp);
-                temp = "";
-            }
-            else {
-                output.push(expression[i]);
-                i++;
-            }
-        }
-        else if (!isNaN(Number(expression[i])) || expression[i] == ".") {
-            temp += expression[i];
-            i++;
-            while (!isNaN(Number(expression[i])) || expression[i] == ".") {
-                temp += expression[i];
-                i++;
-            }
-            output.push(temp);
-            temp = "";
-        }
-        else {
-            output.push(expression[i]);
-            i++;
-        }
-    }
-    return output;
-}
-function appendInput(element) {
-    if (display) {
-        display.value += element;
-    }
-}
-function checkParenthesis(expression) {
-    const openParenthesis = expression.match(/\(/g);
-    const closeParenthesis = expression.match(/\)/g);
-    if (openParenthesis == null && closeParenthesis == null) {
-        return true;
-    }
-    if (openParenthesis != null && closeParenthesis != null && openParenthesis.length === closeParenthesis.length) {
-        return true;
+function memorySetUp(operation) {
+    if (operation != "MR" && operation != "MC" && display.value == "") {
+        showAlert("Give Input");
     }
     else {
-        return false;
+        switch (operation) {
+            case "M+":
+                memory += Number(evaluateExpression(display.value));
+                break;
+            case "M-":
+                memory -= Number(evaluateExpression(display.value));
+                break;
+            case "MR":
+                display.value = memory.toString();
+                break;
+            case "MC":
+                memory = 0;
+                break;
+            case "MS":
+                memory = Number(evaluateExpression(display.value));
+                break;
+            default:
+                showAlert("Invalid input at memory section");
+                break;
+        }
+    }
+    checkForMemory();
+}
+checkForMemory();
+function checkForMemory() {
+    if (memory === 0) {
+        memoryRecallButton.setAttribute("disabled", "");
+    }
+    else {
+        memoryRecallButton.removeAttribute("disabled");
     }
 }
