@@ -1,0 +1,192 @@
+/* reset Classes */
+
+body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    background-color: rgb(69, 69, 69);
+    font-size: 15px;
+    font-family: "Roboto", sans-serif;
+  }
+  
+  button {
+    text-align: center;
+    font-weight: 500;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    background-color: rgb(248, 248, 248);
+  }
+  
+  input {
+    border: none;
+    background: none;
+    outline: none;
+    max-width: 320px;
+    pointer-events: none;
+  }
+  
+  /* Utility Classes  */
+  
+  .p-5 {
+    padding: 7px;
+  }
+  
+  /* custom classes */
+  
+  #main-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    flex-direction: column;
+  }
+  
+  #calculator-body {
+    background-color: rgb(240, 240, 240);
+    box-shadow: 0px 0px 6px rgb(151, 151, 151);
+    border-radius: 2px;
+    padding: 10px;
+  }
+  
+  /* display screen  */
+  #display-screen-text {
+    text-align: right;
+    font-size: xx-large;
+    margin: 0;
+    padding: 20px 10px;
+  }
+  
+  /* degree an radian row */
+  #degree-section {
+    display: flex;
+  }
+  
+  .degree-section-item {
+    padding: 0px 10px;
+    font-weight: 500;
+  }
+  
+  /* memory section */
+  #memory-section {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-weight: 500;
+  }
+  
+  .memory-units {
+    background-color: transparent;
+  }
+  
+  .memory-units:hover,
+  .degree-section-item:hover {
+    color: rgb(83, 83, 83);
+  }
+  
+  /* third Row */
+  
+  .third-row {
+    display: flex;
+    padding-bottom: 7px;
+    font-weight: 300;
+  }
+  
+  .third-row-div {
+    display: flex;
+    align-items: center;
+  }
+  
+  .dropdown {
+    position: relative;
+  }
+  
+  .dropdown-items {
+    display: none;
+    position: absolute;
+    top: 25px;
+    grid-template-columns: repeat(3, 1fr);
+    background-color: rgb(240, 240, 240);
+  }
+  
+  .dropdown-item {
+    height: 40px;
+    width: 55px;
+    background-color: rgb(209, 209, 209);
+    margin: 1px;
+  }
+  
+  .dropdown:hover .dropdown-items {
+    display: grid;
+  }
+  
+  .dropdown-item:hover {
+    background-color: rgb(222, 222, 222);
+  }
+  
+  .third-row-div * {
+    padding: 0 2px;
+  }
+  
+  /* main section of buttons */
+  .main-features {
+    display: grid;
+    gap: 3px;
+    grid-template-columns: repeat(5, 1fr);
+  }
+  
+  .feature-item {
+    height: 43px;
+    width: 65px;
+  }
+  
+  .hide-btn {
+    display: none;
+  }
+  
+  .feature-item[data-number] {
+    font-weight: 600;
+    background-color: white;
+  }
+  
+  .feature-item[data-result] {
+    background-color: rgb(130, 209, 255);
+  }
+  
+  .feature-item[data-result]:hover {
+    background-color: rgb(72, 188, 255);
+  }
+  
+  .feature-item:hover {
+    background-color: rgb(235, 235, 235);
+  }
+  
+  /* alert Bar */
+  #alert-bar {
+    position: absolute;
+    right: 10px;
+    top: 20px;
+    display: none;
+    height: 35px;
+    box-shadow: 2px 2px 6px rgb(69, 69, 69);
+  }
+  
+  #alert-bar-input {
+    background-color: rgb(255, 183, 183);
+    padding: 10px;
+    width: 230px;
+    font-weight: 600;
+  }
+  
+  #alert-bar span {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    width: 40px;
+    font-weight: 600;
+    font-size: 25px;
+    text-align: center;
+    padding-top: 5px;
+    color: rgb(255, 220, 220);
+    background-color: rgb(234, 51, 51);
+  }
+  
