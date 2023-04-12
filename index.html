@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculator</title>
+
+  <link rel="shortcut icon" href="./src/images/favicon.png" type="image/x-icon" />
+
+  <!-- google Icons -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,100,0,-25" />
+
+  <!-- google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- CSS File -->
+  <link rel="stylesheet" href="./src/css/style.css" />
+
+  <!-- scrpit -->
+  <script src="./dist/index.js" defer></script>
+</head>
+
+<body>
+  <!-- main-section -->
+  <section id="main-container">
+    <!-- calculator body -->
+    <div id="calculator-body">
+      <div style="color: grey; margin-bottom: 10px">
+        Scientific Calculator
+      </div>
+
+      <!-- display row -->
+      <div id="display-screen">
+        <input id="display-screen-text" value="" placeholder="0" />
+      </div>
+
+      <!-- degree row (frist row) -->
+      <div id="degree-section" class="p-5">
+        <div class="degree-section-item deg-btn" data-deg="deg(">DEG</div>
+        <div class="degree-section-item hide-btn deg-btn" data-deg="rad(">
+          RAD
+        </div>
+        <div class="degree-section-item" id="F-E btn" data-fe="f-e">F-E</div>
+      </div>
+
+      <!-- memory section row (second row ) -->
+      <div id="memory-section" class="p-5">
+
+        <button class="memory-units" data-memory="MC">MC</button>
+        <button class="memory-units" data-memory="MR" id="memoryRecall">MR</button>
+        <button class="memory-units" data-memory="M+">M+</button>
+        <button class="memory-units" data-memory="M-">M-</button>
+        <button class="memory-units" data-memory="MS">MS</button>
+
+      </div>
+
+      <!-- trigonometry row (third row) -->
+      <div class="third-row p-5">
+        <div id="trigonometry" class="third-row-div dropdown">
+
+          <img src="./src/images/trigonometry.png" alt="" height="20px" width="20px" />
+          <span>Trigonometry</span>
+          <span class="material-symbols-outlined">expand_more</span>
+          <div class="dropdown-items">
+
+            <button type="button" class="dropdown-item" data-unary="sin(">sin</button>
+            <button type="button" class="dropdown-item" data-unary="cos(">cos</button>
+            <button type="button" class="dropdown-item" data-unary="tan(">tan</button>
+            <button type="button" class="dropdown-item" data-unary="sinInv(">sin<sup>-1</sup></button>
+            <button type="button" class="dropdown-item" data-unary="cosInv(">cos<sup>-1</sup></button>
+            <button type="button" class="dropdown-item" data-unary="tanInv(">tan<sup>-1</sup></button>
+
+          </div>
+
+        </div>
+
+        <div id="functions" class="third-row-div dropdown">
+
+          <img src="./src/images/function.png" alt="" height="15px" width="15px" />
+
+          <span>Function</span>
+
+          <span class="material-symbols-outlined">expand_more</span>
+
+          <div class="dropdown-items">
+
+            <button type="button" class="dropdown-item" data-unary="mod(">|x|</button>
+            <button type="button" class="dropdown-item" data-unary="floor(">&#8970;x&#8971;</button>
+            <button type="button" class="dropdown-item" data-unary="ceil(">&#8968;x&#8969;</button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- main-features (6*5 matrix) -->
+      <div class="main-features">
+        <!-- row one -->
+
+        <button type="button" class="feature-item" data-flip="flip">2<sup>nd</sup></button>
+        <button type="button" class="feature-item" data-pi="&#960;">&pi;</button>
+        <button type="button" class="feature-item" data-e="e">e</button>
+        <button type="button" class="feature-item" data-clear="C">C</button>
+        <button type="button" class="feature-item material-symbols-outlined" data-backspace="back">backspace</button>
+
+        <!-- row two -->
+        <button type="button" class="feature-item hide-btn flip-btn" data-value="^3">x<sup>3</sup></button>
+        <button type="button" class="feature-item flip-btn" data-value="^2">x<sup>2</sup> </button>
+        <button type="button" class="feature-item" data-unary="1/">1/x </button>
+        <button type="button" class="feature-item" data-unary="mod(">|x| </button>
+        <button type="button" class="feature-item" data-unary="exp("> exp </button>
+        <button type="button" class="feature-item" data-operator="%">mod </button>
+
+
+        <!-- row three -->
+        <button type="button" class="feature-item hide-btn flip-btn" data-unary="cbrt(">&#8731;x</button>
+        <button type="button" class="feature-item flip-btn" data-unary="sqrt(">&#8730;x</button>
+        <button type="button" class="feature-item" data-bracket="(" onClick="appendInput('(')">(</button>
+        <button type="button" class="feature-item" data-bracket=")" onClick="appendInput(')')">)</button>
+        <button type="button" class="feature-item" data-unary="fact(">n!</button>
+        <button type="button" class="feature-item" data-operator="/">&#247;</button>
+
+        <!-- row four -->
+        <button type="button" class="feature-item hide-btn flip-btn" data-value="^(1/"><sup>y</sup>&#8730;x</button>
+        <button type="button" class="feature-item flip-btn" data-value="^">x<sup>y</sup></button>
+        <button type="button" class="feature-item" data-number="7" onClick="appendInput('7')">7</button>
+        <button type="button" class="feature-item" data-number="8" onClick="appendInput('8')">8</button>
+        <button type="button" class="feature-item" data-number="9" onClick="appendInput('9')">9</button>
+        <button type="button" class="feature-item" data-operator="*">&#xD7;</button>
+
+        <!-- row five -->
+        <button type="button" class="feature-item hide-btn flip-btn" data-unary="2^">2 <sup>x</sup></button>
+        <button type="button" class="feature-item flip-btn" data-unary="10^">10<sup>x</sup></button>
+        <button type="button" class="feature-item" data-number="4" onClick="appendInput('4')">4</button>
+        <button type="button" class="feature-item" data-number="5" onClick="appendInput('5')">5</button>
+        <button type="button" class="feature-item" data-number="6" onClick="appendInput('6')">6</button>
+        <button type="button" class="feature-item" data-operator="-">-</button>
+
+        <!-- row six -->
+        <button type="button" class="feature-item hide-btn flip-btn" data-unary="log2(">log<sub>2</sub>x</button>
+        <button type="button" class="feature-item flip-btn" data-unary="log(">log</button>
+        <button type="button" class="feature-item" data-number="1" onClick="appendInput('1')">1</button>
+        <button type="button" class="feature-item" data-number="2" onClick="appendInput('2')">2</button>
+        <button type="button" class="feature-item" data-number="3" onClick="appendInput('3')">3</button>
+        <button type="button" class="feature-item" data-operator="+">+</button>
+
+        <!-- row seven -->
+        <button type="button" class="feature-item hide-btn flip-btn" data-unary="exp(">e<sup>x</sup></button>
+        <button type="button" class="feature-item flip-btn" data-unary="ln(">ln</button>
+        <button type="button" class="feature-item" data-minus="-">+/-</button>
+        <button type="button" class="feature-item" data-number="0" onClick="appendInput('0')">0</button>
+        <button type="button" class="feature-item" data-period="." onClick="appendInput('.')">.</button>
+        <button type="button" class="feature-item" data-result="=">=</button>
+
+      </div>
+    </div>
+
+  </section>
+
+  <div id="alert-bar">
+    <span class="material-symbols-outlined">Error</span>
+    <input id="alert-bar-input" type="text" placeholder="alert shows here" />
+  </div>
+
+
+</body>
+
+</html>
